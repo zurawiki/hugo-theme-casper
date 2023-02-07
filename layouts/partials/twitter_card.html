@@ -1,20 +1,23 @@
 {{ if .IsPage }}
     {{ with .Params.image }}
         <!-- Twitter summary card with large image must be at least 280x150px -->
-        <meta name="twitter:card" content="summary_large_image"/>
-        <meta name="twitter:image" content="{{ .  | relURL }}"/>
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="{{ . | absURL }}" />
     {{ else }}
-        <meta name="twitter:card" content="summary"/>
+        <meta name="twitter:card" content="summary" />
     {{ end }}
 {{ else }}
-    <meta name="twitter:card" content="summary"/>
-    {{ with .Site.Params.cover }}
-    <meta name="twitter:image" content="{{ . | relURL }}"/>
-    {{ end }}
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:image" content="{{ .Site.Params.cover | absURL }}" />
 {{ end }}
 
 <!-- Twitter Card data -->
-<meta name="twitter:title" content="{{ .Title }}"/>
-<meta name="twitter:description" content="{{if .IsPage}}{{ .Description }}{{ else }}{{ .Site.Params.description }}{{ end }}"/>
-<meta name="twitter:site" content="@{{ .Site.Params.twitterName }}"/>
-
+<meta name="twitter:title" content="{{ .Title }}" />
+{{ if .IsPage }}
+<meta name="twitter:description" content="{{ .Description | default (substr .Summary 0 160) }}" />
+{{ else }}
+<meta name="twitter:description" content="{{ .Site.Params.metadescription | default .Site.Params.description }}" />
+{{ end }}
+<meta name="twitter:site" content="@{{ .Site.Params.twitterName }}" />
+{{ $url := urls.Parse .Site.BaseURL }}
+<meta property="twitter:domain" content="{{ $url.Host }}">
